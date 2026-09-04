@@ -1,0 +1,14 @@
+{
+  "id": "FRXP-0002",
+  "timestamp_utc": "2026-09-04T14:15:42Z",
+  "statement": "SEALED COMMITMENT: SHA-256 721168f580bc13e6f231cde92f655a03c3572c1737de18422cee6e33e6672ed0 over a salted canonical statement stating a valuation-class prior on a named public asset. The statement and salt disclose at methodology publication or at resolution, whichever comes first; the disclosed statement's own pre-stated criterion then governs scoring.",
+  "p": null,
+  "basis": "open",
+  "source_class": "sealed-commitment (class added 2026-09-03; see GOVERNANCE.md)",
+  "method": "frx-val-v0-draft (pre-registration commitment; percentile rendering refused at current n)",
+  "resolution_criterion": "Foster Rx publishes a statement and salt whose SHA-256 equals the committed digest; scoring then follows the disclosed statement's internal criterion. Absent disclosure by the deadline, void.",
+  "resolution_deadline": "2028-12-31",
+  "resolution": "pending",
+  "prev_hash": "6bd3e1442f6365c7fad6720befdc498d2337969d1aee50958ada6b124a069821",
+  "entry_hash": "716917558a87ceb37f018f1043a30b2d0cc265e38100d532d336e3f29628523f"
+}

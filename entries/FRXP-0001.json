@@ -1,0 +1,14 @@
+{
+  "id": "FRXP-0001",
+  "timestamp_utc": "2026-09-04T14:15:42Z",
+  "statement": "Viking Therapeutics registers a Phase 3 trial of oral VK2735 on ClinicalTrials.gov, or publicly announces initiation of oral VK2735 Phase 3 dosing, on or before 2026-12-31.",
+  "p": 0.6,
+  "basis": "open",
+  "source_class": "public registry and issuer press releases",
+  "method": "frx-cal-v0 (registered, hash-committed; register scoring is the method's validation)",
+  "resolution_criterion": "A ClinicalTrials.gov record with study phase Phase 3 and an oral VK2735 arm, first-posted on or before 2026-12-31, OR an issuer press release dated on or before 2026-12-31 announcing oral Phase 3 initiation. Either alone resolves correct; neither by the deadline resolves incorrect.",
+  "resolution_deadline": "2027-01-31",
+  "resolution": "pending",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "entry_hash": "6bd3e1442f6365c7fad6720befdc498d2337969d1aee50958ada6b124a069821"
+}
