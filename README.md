@@ -4,87 +4,108 @@
 > coverage events, made to be scored. Not investment advice; not a
 > solicitation."*
 
-## Why this exists (and why now)
-A calibration track record cannot be backdated. Every entry made this
-year becomes, by the time the calibrated transition model ships (Layer
-3.E), evidence no competitor and no later Foster Rx could manufacture.
-The register is also the company's method performed in public: stated
-criteria before outcomes, provenance labeled, zeros published. It costs
-an afternoon now and is impossible at any price later.
+This repository is a public register of forecasts. Each forecast is entered
+with a stated probability and a resolution rule before the outcome is known.
+Entries are hash-chained and timestamped, then scored when the outcome lands,
+misses included.
 
-## What it is NOT — stated on the register itself
-Not ML-1. Not a model output (until one exists, and then labeled as
-such). Not investment advice — header disclaimer: *"A research
-calibration record. Forecasts about clinical, regulatory, and coverage
-events, made to be scored. Not investment advice; not a solicitation."*
-Not a company-ops feed: v1 entries are DOMAIN predictions only (assets,
-regulatory decisions, coverage decisions) — never company gates,
-pipeline, or traction, which would leak strategy through the register.
+## What an entry is
 
-## Entry schema (one YAML/JSON record per entry, append-only)
-- `id` — FRXP-{seq}
-- `timestamp_utc` — entry creation
-- `statement` — a single resolvable claim with a binary or numeric
-  outcome (e.g., "Asset X's Phase 3 readout in indication Y reports a
-  statistically significant primary endpoint by DATE")
-- `p` — stated probability (or interval for numeric claims)
-- `basis` — `open` | `confirmatory` (honest-provenance rule: claims where
-  the direction was informed by existing signals are labeled confirmatory
-  and EXCLUDED from headline calibration)
-- `source_class` — public sources only in v1 (registry, label, docket,
-  press release classes — no architecture internals, no client data)
-- `resolution_criterion` — the exact observable that resolves it, named
-  at entry (the register's whole discipline)
-- `resolution_deadline` — date after which unresolved = `void`
-- `resolution` — `pending` | `correct` | `incorrect` | `void` + date +
+An entry is a single claim that can be resolved, about a clinical, regulatory
+or coverage event. It carries a stated probability, the exact observable that
+will resolve it, and a deadline. Entries are append-only: nothing is edited or
+deleted after it is entered.
+
+Entries cover drug assets, regulatory decisions and coverage decisions. They
+rest on public sources only. The register does not carry forecasts about
+Foster Rx itself.
+
+Nothing here is investment advice.
+
+## Entry schema (one JSON record per entry, append-only)
+
+- `id`: FRXP-{seq}
+- `timestamp_utc`: when the entry was created
+- `statement`: a single resolvable claim with a binary or numeric outcome
+  (e.g., "Asset X's Phase 3 readout in indication Y reports a statistically
+  significant primary endpoint by DATE")
+- `p`: the stated probability (or an interval for numeric claims)
+- `method`: the versioned identifier of the procedure that produced `p`
+- `basis`: `open` | `confirmatory`. Claims where the direction was informed
+  by existing signals are labelled confirmatory and excluded from headline
+  calibration.
+- `source_class`: the class of public source the entry rests on (registry,
+  label, docket, press release)
+- `resolution_criterion`: the exact observable that resolves the entry,
+  named at entry
+- `resolution_deadline`: the date after which an unresolved entry is `void`
+- `resolution`: `pending` | `correct` | `incorrect` | `void`, with date and
   citation
-- `entry_hash` — SHA-256 of the canonical entry
-- `prev_hash` — chain link (genesis = zeros)
+- `entry_hash`: SHA-256 of the canonical entry
+- `prev_hash`: the chain link (the first entry links to 64 zeros)
 
-The register's normative schema, including the `method` field, is
-[`schema.md`](schema.md).
+This is a summary. The normative schema is [`schema.md`](schema.md).
 
-## Governance (published beside the register)
-1. **Append-only.** Errors are corrected by a new entry referencing the
-   old id; nothing is edited or deleted.
-2. **Resolution by pre-stated criterion only** — never by judgment call
+## Governance
+
+1. **Append-only.** Errors are corrected by a new entry that references the
+   old id. Nothing is edited or deleted.
+2. **Resolution by the pre-stated criterion only**, never by a judgment call
    at resolution time. Ambiguous outcomes resolve `void`, and voids are
    published and counted.
-3. **Calibration reporting:** quarterly Brier score and reliability
-   summary once n ≥ 20 resolved `open` entries; confirmatory entries
-   reported separately, never blended.
-4. **Cadence:** entries in batches, each batch committed and anchored
-   same day. No entry references non-public information, ever.
+3. **Calibration reporting.** A quarterly Brier score and reliability summary
+   once 20 or more `open` entries have resolved. Confirmatory entries are
+   reported separately and never blended.
+4. **Cadence.** Entries are made in batches, and each batch is committed and
+   anchored the same day. No entry references non-public information.
+5. **Sealed commitments.** An entry may publish only the SHA-256 of a salted
+   statement, with disclosure bound to a trigger and deadline stated at
+   entry. It is scored only after disclosure.
+6. **Hash chain.** Each entry carries its own hash and the hash of the entry
+   before it.
 
-The governing text is [`GOVERNANCE.md`](GOVERNANCE.md).
+This is a summary. The governing text is [`GOVERNANCE.md`](GOVERNANCE.md).
 
 ## Method
 Probabilities are produced by a versioned, deterministic internal method (frx-cal-v0) over public inputs. Method commitment: SHA-256 50feac6451f5028b84cb97c9fe72a66e49246200dbcabad185ce979ff046f842. The method is validated by this register's published scoring.
 
-## Anchoring (the "cannot be re-created" mechanics)
-- Public GitHub repo `fosterrx-prediction-register`: entries as files;
-  git history is the first timestamp layer.
-- **OpenTimestamps** stamp on each batch commit hash — Bitcoin-anchored
-  proof of existence, independent of Foster Rx and of GitHub.
-- Hash chain inside the entries (schema above) — internal integrity.
-- Later (post-B4): merkle-sd integration for selective disclosure, and a
-  credential-less `/register` page on foster-rx-domain in the same rail
-  family as /verify. Neither blocks v1 — git + OTS ships this week.
+## Anchoring
+
+Three layers show that an entry existed when it says it did, and that it has
+not changed since.
+
+- **Git history.** Entries are files in this public repository. The commit
+  history is the first timestamp.
+- **OpenTimestamps.** The commit hash of each batch is stamped with
+  OpenTimestamps, which gives a Bitcoin-anchored proof of existence that does
+  not depend on Foster Rx or on GitHub. For the first batch,
+  `BATCH-0001.commit` holds the commit hash and `BATCH-0001.commit.ots` holds
+  the proof.
+- **Hash chain.** Each entry includes the hash of the entry before it, so
+  changing an earlier entry breaks every hash after it.
 
 ## Repository layout
 ```
-README.md          this file — disclaimer, scope, governance summary, method
-GOVERNANCE.md      the four governance rules, in force
-schema.md          the entry schema, field by field
-entries/           one file per entry, append-only (empty until the first batch)
-tools/hash_chain.py  entry hashing and chain verification
+README.md              this file: disclaimer, scope, summaries, method
+GOVERNANCE.md          the six governance rules, in force
+schema.md              the entry schema, field by field
+entries/               one file per entry, append-only (two entries in the first batch)
+BATCH-0001.commit      commit hash of the first batch
+BATCH-0001.commit.ots  OpenTimestamps proof for that commit hash
+tools/hash_chain.py    walks the hash chain and checks every entry
 ```
 
-## Verifying the chain
+## Checking the chain
+
+From the repository root:
+
 ```
 python3 tools/hash_chain.py verify
 ```
 
----
+The tool recomputes every entry hash, checks each link to the entry before
+it, and prints one line per entry.
 
-*Foster Rx Systems Inc. · Patent Pending No. 19/459,855*
+## Contact
+
+info@fosterrx.com
